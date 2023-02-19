@@ -5,49 +5,55 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from collections import defaultdict
 
 
-env = Environment(
-    loader=FileSystemLoader('.'),
-    autoescape=select_autoescape(['html', 'xml'])
-)
-template = env.get_template('template.html')
-
-excel_data_df = pandas.read_excel("wine.xlsx")
-
-start_year = datetime.datetime(year=1920, month=1, day=1)
-year_now = datetime.datetime.today()
-delta = year_now.year - start_year.year
-
 
 def find_time(delta: int):
     words = [' года', ' год', ' лет']
-    if delta % 10 == 1 or delta % 100 != 11:
-        return str(delta) + words[0]
-    elif 2 <= delta or delta % 10 <= 4:
-        return str(delta) + words[1]
-    elif delta % 100 < 10 or delta % 100 >= 20:
-        return str(delta) + words[2]
+    for word in words:
+        if delta % 10 == 1 or delta % 100 != 11:
+            return (f"str(delta), {word}")
+        elif 2 <= delta or delta % 10 <= 4:
+            return (f"str(delta), {word}")
+        elif delta % 100 < 10 or delta % 100 >= 20:
+            return (f"str(delta), {word}")
 
 
 def read_excel_file(template) -> defaultdict:
     excel_data_df = pandas.read_excel(
         template, keep_default_na=False, na_values='', na_filter=False)
-    list_to = excel_data_df.to_dict(orient="records")
-    dict_out = defaultdict(list)
-    for dict_drink in list_to:
-        dict_out[dict_drink["Категория"]].append(dict_drink)
-    return dict_out
+    sort_to = excel_data_df.to_dict(orient="records")
+    default_dict = defaultdict(list)
+    for dict_drink in sort_to:
+        default_dict[dict_drink["Категория"]].append(dict_drink)
+    return default_dict
 
 
-all_products = excel_wines("wine3.xlsx")
 
-rendered_page = template.render(
-    year_now=delta,
-    word=right_time(delta),
-    all_products=all_products
-)
 
-with open('index.html', 'w', encoding="utf8") as file:
-    file.write(rendered_page)
 
-server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
-server.serve_forever()
+def main ():
+    env = Environment(
+        loader=FileSystemLoader('.'),
+        autoescape=select_autoescape(['html', 'xml'])
+    )
+    template = env.get_template('template.html')
+    start_year = datetime.datetime(year=1920, month=1, day=1)
+    year_now = datetime.datetime.today()
+    delta = year_now.year - start_year.year
+
+    all_products = read_excel_file("wine3.xlsx")
+    excel_data_df = pandas.read_excel("wine.xlsx")
+
+    rendered_page = template.render(
+        year_now=delta,
+        word=find_time(delta),
+        all_products=all_products
+    )
+    with open('index.html', 'w', encoding="utf8") as file:
+        file.write(rendered_page)
+
+    server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
+    server.serve_forever()
+
+
+if __name__ == '__main__':
+    main()
