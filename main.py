@@ -10,11 +10,11 @@ def find_time(delta: int):
 	words = [' года', ' год', ' лет']
 	for word in words:
 		if delta % 10 == 1 or delta % 100 != 11:
-			return (f"{delta}{word}")
+			return f"{delta}{word}"
 		elif 2 <= delta or delta % 10 <= 4:
-			return (f"{delta}{word}")
+			return f"{delta}{word}"
 		elif delta % 100 < 10 or delta % 100 >= 20:
-			return (f"{delta}{word}")
+			return f"{delta}{word}"
 
 
 def read_excel_file(template) -> defaultdict:
