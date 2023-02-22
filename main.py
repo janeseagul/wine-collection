@@ -35,8 +35,8 @@ def main ():
     )
     template = env.get_template('template.html')
     start_year = datetime.datetime(year=1920, month=1, day=1)
-    year_now = datetime.datetime.today()
-    delta = year_now.year - start_year.year
+    now_year = datetime.datetime.today()
+    delta = now_year.year - start_year.year
 
     all_products = read_excel_file("wine3.xlsx")
     excel_data_df = pandas.read_excel("wine.xlsx")
