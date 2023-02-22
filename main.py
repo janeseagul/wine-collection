@@ -20,13 +20,11 @@ def find_time(delta: int):
 def read_excel_file(template) -> defaultdict:
     excel_data_df = pandas.read_excel(
         template, keep_default_na=False, na_values='', na_filter=False)
-    sort_to = excel_data_df.to_dict(orient="records")
-    default_dict = defaultdict(list)
-    for dict_drink in sort_to:
-        default_dict[dict_drink["Категория"]].append(dict_drink)
-    return default_dict
-
-
+    sorted = excel_data_df.to_dict(orient="records")
+    default_drinks = defaultdict(list)
+    for drinks in sorted:
+        default_drinks[drinks["Категория"]].append(drinks)
+    return default_drinks
 
 
 
