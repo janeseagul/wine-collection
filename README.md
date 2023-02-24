@@ -11,7 +11,9 @@
 pip3 install -r requirements.txt
 ``` 
 - Запустите код командой:
-```python main.py```
+```
+python main.py
+```
 
 - Вам станет доступен сайт по адресу [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
