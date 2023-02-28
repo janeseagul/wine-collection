@@ -41,6 +41,7 @@ def main():
     parser.add_argument(
         '--file_name',
         '-f',
+        default='wine3.xlsx'
     )
     args = parser.parse_args()
 
