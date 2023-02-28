@@ -3,17 +3,18 @@ import datetime
 import pandas
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from collections import defaultdict
+import argparse
 
 
-def find_time(delta: int):
-    words = [' года', ' год', ' лет']
-    for word in words:
-        if delta % 10 == 1 or delta % 100 != 11:
-            return f"{delta}{word}"
-        elif 2 <= delta or delta % 10 <= 4:
-            return f"{delta}{word}"
-        elif delta % 100 < 10 or delta % 100 >= 20:
-            return f"{delta}{word}"
+def find_time(delta):
+    years_count = str(delta)
+
+    if len(years_count) == 0: return ''
+    if len(years_count) > 1 and years_count[-2] == '1': return 'лет'
+
+    words = {'0': 'лет', '1': 'год', '2': 'года', '3': 'года', '4': 'года', '5': 'лет', '6': 'лет', '7': 'лет',
+             '8': 'лет', '9': 'лет'}
+    return str(delta) + ' ' + words[years_count[-1]]
 
 
 def read_excel_file(template) -> defaultdict:
@@ -36,13 +37,21 @@ def main():
     now_time = datetime.datetime.today()
     delta = now_time.year - start_time.year
 
-    all_drinks = read_excel_file("wine3.xlsx")
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--file_name',
+        '-f',
+    )
+    args = parser.parse_args()
+
+    all_drinks = read_excel_file(args.file_name)
 
     rendered_page = template.render(
         year_now=delta,
         word=find_time(delta),
         all_drinks=all_drinks
     )
+
     with open('index.html', 'w', encoding="utf8") as file:
         file.write(rendered_page)
 
