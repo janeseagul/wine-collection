@@ -9,12 +9,11 @@ import argparse
 def find_time(delta):
     years_count = str(delta)
 
-    if len(years_count) == 0: return ''
-    if len(years_count) > 1 and years_count[-2] == '1': return 'лет'
+    if len(years_count) <= 1 or years_count[-2] != '1':
+        words = {'0': 'лет', '1': 'год', '2': 'года', '3': 'года', '4': 'года', '5': 'лет', '6': 'лет', '7': 'лет',
+                 '8': 'лет', '9': 'лет'}
+        return str(delta) + ' ' + words[years_count[-1]]
 
-    words = {'0': 'лет', '1': 'год', '2': 'года', '3': 'года', '4': 'года', '5': 'лет', '6': 'лет', '7': 'лет',
-             '8': 'лет', '9': 'лет'}
-    return str(delta) + ' ' + words[years_count[-1]]
 
 
 def read_excel_file(template) -> defaultdict:
@@ -22,8 +21,8 @@ def read_excel_file(template) -> defaultdict:
         template, keep_default_na=False, na_values='', na_filter=False)
     sorted_drinks = excel_data_df.to_dict(orient="records")
     all_drink_items = defaultdict(list)
-    for drinks in sorted_drinks:
-        all_drink_items[drinks["Категория"]].append(drinks)
+    for drink in sorted_drinks:
+        all_drink_items[drink["Категория"]].append(drink)
     return all_drink_items
 
 
