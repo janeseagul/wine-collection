@@ -1,5 +1,7 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import datetime
+from typing import Any
+
 import pandas
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from collections import defaultdict
@@ -12,7 +14,7 @@ def find_time(delta):
     if len(years_count) <= 1 or years_count[-2] != '1':
         words = {'0': 'лет', '1': 'год', '2': 'года', '3': 'года', '4': 'года', '5': 'лет', '6': 'лет', '7': 'лет',
                  '8': 'лет', '9': 'лет'}
-        return str(delta) + ' ' + words[years_count[-1]]
+        return f'{years_count} {words[years_count[-1]]}'
 
 
 
@@ -21,8 +23,8 @@ def read_excel_file(template) -> defaultdict:
         template, keep_default_na=False, na_values='', na_filter=False)
     sorted_drinks = excel_data_df.to_dict(orient="records")
     all_drink_items = defaultdict(list)
-    for drink in sorted_drinks:
-        all_drink_items[drink["Категория"]].append(drink)
+    for category in sorted_drinks:
+        all_drink_items[category["Категория"]].append(category)
     return all_drink_items
 
 
