@@ -1,6 +1,5 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import datetime
-from typing import Any
 
 import pandas
 from jinja2 import Environment, FileSystemLoader, select_autoescape
